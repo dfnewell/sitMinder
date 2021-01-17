@@ -64,8 +64,8 @@ WiFiServer server(80);
 
 // IR Proximity Sensor and Piezo Constants
 const int piezo=13;
-const int irLED = 12;
-const int irSensor = 14;
+//const int irLED = 12;
+const int irSensor = 36;
 int dutyCycle = 255;
 int sensorValue;
 
@@ -107,7 +107,7 @@ void setup() {
   display.clearDisplay();
 
   // IR Proximity Sensor Initialize
-  pinMode(13,OUTPUT);
+  pinMode(irSensor,INPUT);
   ledcSetup(0,2500,8);
   ledcAttachPin(piezo,0);
 
@@ -184,7 +184,6 @@ void startTimer(void) {
     display.display();
   if (millis() - timer > 30000)        // use 30 seconds for demo
   {
-    digitalWrite(irLED,HIGH);
     timer = millis();                   // once 30 seconds elapses, reset timer before entering while
     while (millis() - timer < 30000)   // this is technically the point you're supposed to get out of your chair
     {                                  // include some kind of update to the website?
@@ -198,7 +197,9 @@ void startTimer(void) {
       display.println(timeRemaining);
       display.display();
       sensorValue = analogRead(irSensor);
-      if (sensorValue < 1300)           // Using rudimentary IR proximity sensor, check if they left their chair
+      Serial.print("Sensor Value: ");
+      Serial.println(sensorValue);
+      if (sensorValue < 1000)           // Using rudimentary IR proximity sensor, check if they left their chair
         {annoyingSound();              // If they didn't, play an annoying sound at them so they leave
         getUpMessage();}               // Also send them a message!
       if (timeRemaining > 24)      // Show a count down on seven segment display.
